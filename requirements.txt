@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+python-dotenv
+sqlalchemy
+langchain==0.2.16
+langchain-community==0.2.16
+langchain-core==0.2.38
+langchain-text-splitters==0.2.4
+langchain-openai==0.1.23
+langchain-chroma==0.1.4
+chromadb==0.5.15
