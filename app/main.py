@@ -124,10 +124,8 @@ if llm:
             embeddings.embed_query("test")
             final_index_name += "_gemini"
         except:
-            print("🔍 Usando Embeddings Locales...")
-            from langchain_huggingface import HuggingFaceEmbeddings
-            embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-            final_index_name += "_local"
+            print("❌ ERROR: No se pudieron cargar embeddings de nube.")
+            embeddings = None
 
     try:
         if embeddings: # Solo si hay embeddings
@@ -221,8 +219,15 @@ async def chat_endpoint(request: QueryRequest):
             return {"source": "error", "answer": "La herramienta solicitada no está configurada correctamente."}
             
     except Exception as e:
+        error_msg = str(e)
+        if "429" in error_msg or "quota" in error_msg.lower() or "ResourceExhausted" in error_msg:
+            return {
+                "source": "mantenimiento",
+                "answer": "⚠️ Créditos de IA agotados por hoy. El agente ha superado su límite de peticiones gratuitas. Por favor, intenta de nuevo mañana o en unas horas. ⚽️"
+            }
+        
         traceback.print_exc()
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=error_msg)
 
 # --- MODIFICACIÓN DEL ROOT ENDPOINT ---
 # Antes devolvía JSON, ahora devuelve el HTML del Frontend

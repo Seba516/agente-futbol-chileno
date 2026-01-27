@@ -48,13 +48,8 @@ def ingest_data():
             final_index_name += "_gemini"
             print("✅ Usando Google Gemini Embeddings")
         except Exception as e2:
-            print(f"⚠️ Gemini falló: {e2}")
-            # Intento 3: Local (Plan C)
-            print("🔍 Cambiando a Plan C: Embeddings Locales (HuggingFace)...")
-            from langchain_huggingface import HuggingFaceEmbeddings
-            embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-            final_index_name += "_local"
-            print("✅ Usando HuggingFace Embeddings (Local)")
+            print(f"❌ ERROR: Fallaron todos los métodos de embeddings (OpenAI y Gemini). No se puede realizar la ingesta sin API.")
+            raise e2
 
     # 4. Enviar a Redis
     print(f"🧠 Enviando a Redis ({os.getenv('REDIS_HOST')}) -> Índice: {final_index_name}...")
