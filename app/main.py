@@ -163,6 +163,42 @@ else:
     sql_agent = None
     rag_chain = None
 
+@app.get("/api/dashboard")
+async def get_dashboard_data():
+    import sqlite3
+    try:
+        conn = sqlite3.connect(db_path)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        
+        # 1. Obtener Top 5 Posiciones
+        cursor.execute('''
+            SELECT p.posicion, e.nombre, p.puntos, p.dif_gol 
+            FROM posiciones p 
+            JOIN equipos e ON p.equipo_id = e.id 
+            ORDER BY p.posicion LIMIT 5
+        ''')
+        top_posiciones = [dict(row) for row in cursor.fetchall()]
+        
+        # 2. Obtener Últimos 5 Resultados
+        cursor.execute('''
+            SELECT p.fecha, el.nombre as local, ev.nombre as visita, p.goles_local, p.goles_visita 
+            FROM partidos p 
+            JOIN equipos el ON p.local_id = el.id 
+            JOIN equipos ev ON p.visita_id = ev.id 
+            ORDER BY p.id DESC LIMIT 5
+        ''')
+        ultimos_resultados = [dict(row) for row in cursor.fetchall()]
+        
+        conn.close()
+        return {
+            "top_posiciones": top_posiciones,
+            "ultimos_resultados": ultimos_resultados
+        }
+    except Exception as e:
+        print(f"⚠️ Error en dashboard data: {e}")
+        return {"error": str(e)}
+
 # --- 5. Endpoints ---
 class Message(BaseModel):
     role: str
