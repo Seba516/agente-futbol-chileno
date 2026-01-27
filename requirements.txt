@@ -16,3 +16,4 @@ redisvl
 langchain-google-genai
 sentence-transformers
 langchain-huggingface
+aiofiles
