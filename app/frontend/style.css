@@ -385,7 +385,7 @@ button:hover {
 }
 
 /* Responsive */
-@media (max-width: 1024px) {
+@media (max-width: 800px) {
     .dashboard {
         flex-direction: column;
         overflow-y: auto;

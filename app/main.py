@@ -130,13 +130,13 @@ if llm:
     solo reformúlala si es necesario, de lo contrario devuélvela tal cual."""
 
     contextualize_q_prompt = ChatPromptTemplate.from_messages([
-        ("system", contextualize_q_system_prompt),
+        ("system", contextualize_q_system_prompt + "\nIMPORTANTE: Responde siempre en el mismo idioma que el usuario."),
         MessagesPlaceholder("chat_history"),
         ("human", "{input}"),
     ])
 
     rag_prompt = ChatPromptTemplate.from_messages([
-        ("system", "Contesta la pregunta basándote SOLO en el siguiente contexto:\n\n{context}"),
+        ("system", "Contesta la pregunta basándote SOLO en el siguiente contexto:\n\n{context}\n\nIMPORTANTE: Responde siempre en el mismo idioma en el que el usuario te pregunta (español por defecto)."),
         MessagesPlaceholder("chat_history"),
         ("human", "{input}"),
     ])
@@ -228,6 +228,7 @@ async def chat_endpoint(request: QueryRequest):
     Si la pregunta requiere contar, sumar, ver puntos, tablas o estadísticas numéricas, responde SOLAMENTE: "SQL".
     Si la pregunta es sobre historia, reglas, apodos, o información cualitativa, responde SOLAMENTE: "RAG".
     Ten en cuenta el historial para entender a qué se refiere el usuario.
+    RESPONDE SIEMPRE EN EL MISMO IDIOMA QUE EL USUARIO.
     """
     
     router_inputs = [("system", system_instruction)] + chat_history + [("human", pregunta)]
