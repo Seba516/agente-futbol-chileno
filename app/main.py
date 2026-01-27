@@ -1,13 +1,12 @@
 import os
+import traceback
+from typing import List, Optional
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from dotenv import load_dotenv
-
 from fastapi.middleware.cors import CORSMiddleware
-from typing import List, Optional
-# LangChain Imports
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-from langchain_chroma import Chroma
+
+# LangChain Essential Imports
 from langchain_community.utilities import SQLDatabase
 from langchain_community.agent_toolkits import create_sql_agent
 from langchain.chains import create_retrieval_chain, create_history_aware_retriever
@@ -19,11 +18,10 @@ from langchain_core.messages import HumanMessage, AIMessage
 load_dotenv()
 app = FastAPI(
     title="Agente Futbolero AI",
-    description="API que responde sobre fútbol chileno usando SQL y RAG",
-    version="1.0.0"
+    description="API que responde sobre fútbol chileno usando SQL y RAG con Fallback",
+    version="1.1.0"
 )
 
-# Configurar CORS (Permitir peticiones desde el frontend)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -32,67 +30,133 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Configurar el LLM (El cerebro)
-llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
+# --- 2. Cargar Modelos (LLM y Embeddings) con Fallback ---
+llm = None
+embeddings = None
+quota_error = False
 
-# ---------------------------------------------------------
-# 2. Configurar Herramienta SQL (Estadísticas)
-# Ajustamos la ruta para que encuentre la DB incluso si ejecutamos desde la carpeta 'app'
+def load_models():
+    global llm, embeddings, quota_error
+    
+    # Intentar OpenAI
+    try:
+        print("🔍 Probando OpenAI (GPT-3.5 + Embeddings)...")
+        from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+        o_llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0, max_retries=1)
+        o_embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+        o_llm.invoke("ping")
+        llm = o_llm
+        embeddings = o_embeddings
+        print("✅ OpenAI activo (Plan A)")
+        return
+    except Exception as e:
+        print(f"⚠️ OpenAI falló: {e}")
+
+    # Intentar Gemini
+    try:
+        print("🔍 Probando Gemini (Plan B)...")
+        from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
+        g_llm = ChatGoogleGenerativeAI(model="gemini-3-flash-preview", temperature=0)
+        g_embeddings = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
+        g_llm.invoke("ping")
+        llm = g_llm
+        embeddings = g_embeddings
+        print("✅ Gemini activo (Plan B)")
+        return
+    except Exception as e2:
+        print(f"⚠️ Gemini falló: {e2}")
+
+    print("❌ ERROR: Todos los proveedores de LLM han fallado o agotado su cuota.")
+    quota_error = True
+
+load_models()
+
+# --- 3. Recursos de Datos ---
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 db_path = os.path.join(base_dir, "data", "campeonato_nacional_2025.db")
 db = SQLDatabase.from_uri(f"sqlite:///{db_path}")
 
-# Creamos un agente especializado en SQL
-# Este agente sabe mirar las tablas y crear queries automáticamente
-sql_agent = create_sql_agent(
-    llm=llm,
-    db=db,
-    agent_type="openai-tools",
-    verbose=True
-)
+if llm:
+    # Agente SQL
+    sql_agent = create_sql_agent(
+        llm=llm,
+        db=db,
+        agent_type="openai-tools" if "ChatOpenAI" in str(type(llm)) else "zero-shot-react-description",
+        verbose=True,
+        handle_parsing_errors=True
+    )
+    
+    # RAG Chain
+    from langchain_community.vectorstores import Redis
+    REDIS_URL = f"redis://:{os.getenv('REDIS_PASSWORD')}@{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT')}"
+    BASE_INDEX_NAME = os.getenv("REDIS_INDEX", "agente_futbol")
+    
+    # Descubrir Embeddings Disponibles
+    embeddings = None
+    final_index_name = BASE_INDEX_NAME
+    
+    try:
+        print("🔍 Probando OpenAI Embeddings...")
+        from langchain_openai import OpenAIEmbeddings
+        embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+        embeddings.embed_query("test")
+        final_index_name += "_openai"
+    except:
+        try:
+            print("🔍 Probando Gemini Embeddings...")
+            from langchain_google_genai import GoogleGenerativeAIEmbeddings
+            embeddings = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
+            embeddings.embed_query("test")
+            final_index_name += "_gemini"
+        except:
+            print("🔍 Usando Embeddings Locales...")
+            from langchain_huggingface import HuggingFaceEmbeddings
+            embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+            final_index_name += "_local"
 
-# ---------------------------------------------------------
-# 3. Configurar Herramienta RAG (Texto/Historia)
-# ---------------------------------------------------------
-CHROMA_PATH = os.path.join(base_dir, "data", "chroma_db")
-embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+    try:
+        print(f"🔌 Conectando a Redis: {final_index_name}")
+        vectorstore = Redis(
+            redis_url=REDIS_URL,
+            index_name=final_index_name,
+            embedding=embeddings
+        )
+        retriever = vectorstore.as_retriever()
+        
+        # ... rest of the chain config ...
 
-# Conectar a la base vectorial que creamos antes
-vectorstore = Chroma(persist_directory=CHROMA_PATH, embedding_function=embeddings)
-retriever = vectorstore.as_retriever()
+        # Chain logic
+        contextualize_q_system_prompt = """Dado el historial de chat y la última pregunta del usuario 
+        que podría referirse al contexto en el historial, formula una pregunta independiente 
+        que se pueda entender sin el historial. NO respondas la pregunta, 
+        solo reformúlala si es necesario, de lo contrario devuélvela tal cual."""
 
-# A. Condensador de Contexto (Contextualize Question)
-# Esto toma el historial y la nueva pregunta, y genera una pregunta "independiente" (standalone)
-contextualize_q_system_prompt = """Dado el historial de chat y la última pregunta del usuario 
-que podría referirse al contexto en el historial, formula una pregunta independiente 
-que se pueda entender sin el historial. NO respondas la pregunta, 
-solo reformúlala si es necesario, de lo contrario devuélvela tal cual."""
+        contextualize_q_prompt = ChatPromptTemplate.from_messages([
+            ("system", contextualize_q_system_prompt),
+            MessagesPlaceholder("chat_history"),
+            ("human", "{input}"),
+        ])
 
-contextualize_q_prompt = ChatPromptTemplate.from_messages([
-    ("system", contextualize_q_system_prompt),
-    MessagesPlaceholder("chat_history"),
-    ("human", "{input}"),
-])
+        history_aware_retriever = create_history_aware_retriever(llm, retriever, contextualize_q_prompt)
 
-# Creamos el retriever que entiende el historial
-history_aware_retriever = create_history_aware_retriever(llm, retriever, contextualize_q_prompt)
+        rag_prompt = ChatPromptTemplate.from_messages([
+            ("system", "Contesta la pregunta basándote SOLO en el siguiente contexto:\n\n{context}"),
+            MessagesPlaceholder("chat_history"),
+            ("human", "{input}"),
+        ])
 
-# B. Cadena de Respuesta (Response Chain)
-rag_prompt = ChatPromptTemplate.from_messages([
-    ("system", "Contesta la pregunta basándote SOLO en el siguiente contexto:\n\n{context}"),
-    MessagesPlaceholder("chat_history"),
-    ("human", "{input}"),
-])
+        document_chain = create_stuff_documents_chain(llm, rag_prompt)
+        rag_chain = create_retrieval_chain(history_aware_retriever, document_chain)
+    except Exception as e:
+        print(f"⚠️ Error al conectar con Redis o configurar RAG: {e}")
+        rag_chain = None
+else:
+    sql_agent = None
+    rag_chain = None
 
-document_chain = create_stuff_documents_chain(llm, rag_prompt)
-rag_chain = create_retrieval_chain(history_aware_retriever, document_chain)
-
-# ---------------------------------------------------------
-# 4. Lógica de Enrutamiento (El "Router")
-# ---------------------------------------------------------
-# Modelo de datos para la petición (Request Body)
+# --- 5. Endpoints ---
 class Message(BaseModel):
-    role: str  # "user" o "assistant"
+    role: str
     content: str
 
 class QueryRequest(BaseModel):
@@ -101,72 +165,49 @@ class QueryRequest(BaseModel):
 
 @app.post("/agent/chat")
 async def chat_endpoint(request: QueryRequest):
-    """
-    Endpoint principal. Decide si la pregunta es de datos (SQL) o texto (RAG).
-    """
-    pregunta = request.question
+    if not llm:
+        return {
+            "source": "mantenimiento", 
+            "answer": "⚠️ Lo siento, he agotado mis créditos diarios de IA (OpenAI y Gemini). Por favor, intenta de nuevo en unos minutos o mañana. ¡El fútbol chileno te espera!"
+        }
     
-    # Convertir historial a formato LangChain
-    chat_history = []
-    for msg in request.history:
-        if msg.role == "user":
-            chat_history.append(HumanMessage(content=msg.content))
-        else:
-            chat_history.append(AIMessage(content=msg.content))
+    pregunta = request.question
+    chat_history = [
+        HumanMessage(content=msg.content) if msg.role == "user" else AIMessage(content=msg.content)
+        for msg in request.history
+    ]
 
-    # Paso A: Preguntar al LLM qué herramienta usar
+    # Clasificador de intención
     system_instruction = """
     Eres un clasificador de preguntas de fútbol.
     Si la pregunta requiere contar, sumar, ver puntos, tablas o estadísticas numéricas, responde SOLAMENTE: "SQL".
     Si la pregunta es sobre historia, reglas, apodos, o información cualitativa, responde SOLAMENTE: "RAG".
-    Ten en cuenta el historial para entender a qué se refiere el usuario si usa pronombres.
+    Ten en cuenta el historial para entender a qué se refiere el usuario.
     """
     
-    # El router también recibe el historial para entender el contexto
-    router_inputs = [("system", system_instruction)]
-    for msg in chat_history:
-        router_inputs.append(msg)
-    router_inputs.append(("human", pregunta))
+    router_inputs = [("system", system_instruction)] + chat_history + [("human", pregunta)]
+    decision = (llm.invoke(router_inputs)).content.strip()
     
-    router_response = llm.invoke(router_inputs)
-    decision = router_response.content.strip()
-    
-    print(f"🤔 Decisión del Router: {decision}")
+    print(f"🤔 Router: {decision}")
 
     try:
-        if "SQL" in decision:
-            # Ejecutar Agente SQL
-            # Reformulamos la pregunta con el LLM para que el agente SQL la entienda sin contexto
-            print("📊 Ejecutando consulta SQL...")
-            
-            # Para SQL agent, es mejor reformular la pregunta primero si hay historial
-            # ya que el create_sql_agent estándar no maneja chat_history nativamente tan fácil como el RAG chain
-            standalone_q_chain = contextualize_q_prompt | llm
-            standalone_q = standalone_q_chain.invoke({"input": pregunta, "chat_history": chat_history})
-            query_to_run = standalone_q.content
-
-            response = sql_agent.invoke({"input": query_to_run})
-            return {
-                "source": "database_sql",
-                "answer": response["output"]
-            }
+        if "SQL" in decision and sql_agent:
+            print("📊 SQL Agent...")
+            # Reformular para SQL agent
+            standalone_q = (contextualize_q_prompt | llm).invoke({"input": pregunta, "chat_history": chat_history})
+            response = sql_agent.invoke({"input": standalone_q.content})
+            return {"source": "database_sql", "answer": response["output"]}
+        elif rag_chain:
+            print("📚 RAG Chain...")
+            response = rag_chain.invoke({"input": pregunta, "chat_history": chat_history})
+            return {"source": "knowledge_base_rag", "answer": response["answer"]}
         else:
-            # Ejecutar Cadena RAG
-            print("📚 Buscando en documentos de texto...")
-            response = rag_chain.invoke({
-                "input": pregunta,
-                "chat_history": chat_history
-            })
-            return {
-                "source": "knowledge_base_rag",
-                "answer": response["answer"]
-            }
+            return {"source": "error", "answer": "La herramienta solicitada no está configurada correctamente."}
             
     except Exception as e:
-        import traceback
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/")
 def read_root():
-    return {"status": "ok", "message": "El Agente Futbolero está activo ⚽️"}
+    return {"status": "ok", "model": str(type(llm))}
