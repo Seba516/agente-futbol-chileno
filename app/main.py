@@ -70,9 +70,9 @@ def load_models():
     try:
         print("🔍 Probando Gemini (Plan B)...")
         from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
-        g_llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0)
-        g_embeddings = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
-        # g_llm.invoke("ping")
+        g_llm = ChatGoogleGenerativeAI(model="gemini-3-flash-preview", temperature=0)
+        g_embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+        g_llm.invoke("ping")
         llm = g_llm
         embeddings = g_embeddings
         print("✅ Gemini activo (Plan B)")
@@ -114,14 +114,14 @@ if llm:
         print("🔍 Probando OpenAI Embeddings...")
         from langchain_openai import OpenAIEmbeddings
         embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
-        # embeddings.embed_query("test") # Comentado para evitar consumo extra en deploy
+        embeddings.embed_query("test") # Validamos cuota
         final_index_name += "_openai"
     except:
         try:
             print("🔍 Probando Gemini Embeddings...")
             from langchain_google_genai import GoogleGenerativeAIEmbeddings
-            embeddings = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
-            # embeddings.embed_query("test")
+            embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+            embeddings.embed_query("test")
             final_index_name += "_gemini"
         except:
             print("🔍 Usando Embeddings Locales...")

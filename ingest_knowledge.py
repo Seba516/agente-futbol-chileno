@@ -43,7 +43,7 @@ def ingest_data():
         try:
             print("🔍 Probando Google Gemini...")
             from langchain_google_genai import GoogleGenerativeAIEmbeddings
-            embeddings = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
+            embeddings = GoogleGenerativeAIEmbeddings(model="gemini-3-flash-preview")
             embeddings.embed_query("test")
             final_index_name += "_gemini"
             print("✅ Usando Google Gemini Embeddings")
