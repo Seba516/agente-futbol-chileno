@@ -3,7 +3,7 @@ const chatForm = document.getElementById('chat-form');
 const userInput = document.getElementById('user-input');
 const sendBtn = document.getElementById('send-btn');
 
-const API_URL = 'http://127.0.0.1:8000/agent/chat';
+const API_URL = '/agent/chat';
 
 // Historial local para mantener el contexto
 let messageHistory = [];
