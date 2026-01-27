@@ -12,30 +12,52 @@
 </head>
 
 <body>
-    <div class="container">
-        <header>
-            <div class="logo">⚽️</div>
-            <h1>Agente Futbolero <span>AI</span></h1>
-            <p>Campeonato Nacional Chileno 2024-2025</p>
-        </header>
+    <div class="dashboard">
+        <!-- Panel Izquierdo: Estadísticas -->
+        <aside class="sidebar">
+            <header class="sidebar-header">
+                <div class="logo">⚽️</div>
+                <h1>Agente <span>Dashboard</span></h1>
+            </header>
 
-        <div id="chat-container" class="chat-container">
-            <div class="message system">
-                ¡Hola! Soy tu experto en fútbol chileno. Pregúntame sobre la tabla de posiciones, resultados o historia
-                de los equipos.
+            <section class="stats-card">
+                <h3>📊 Top 5 Posiciones</h3>
+                <div id="table-loader" class="loader-small"></div>
+                <div id="positions-table"></div>
+            </section>
+
+            <section class="stats-card">
+                <h3>📅 Últimos Resultados</h3>
+                <div id="results-loader" class="loader-small"></div>
+                <div id="recent-results" class="results-list"></div>
+            </section>
+        </aside>
+
+        <!-- Panel Derecho: Chat -->
+        <main class="main-content">
+            <header class="chat-header">
+                <h2>Chat AI de Fútbol</h2>
+                <p>Campeonato Nacional Chileno 2024-2025</p>
+            </header>
+
+            <div id="chat-container" class="chat-container">
+                <div class="message system">
+                    ¡Hola! Soy tu experto en fútbol chileno. Pregúntame sobre la tabla de posiciones, resultados o
+                    historia de los equipos.
+                </div>
             </div>
-        </div>
 
-        <div class="input-area">
-            <form id="chat-form">
-                <input type="text" id="user-input" placeholder="Escribe tu pregunta aquí..." autocomplete="off">
-                <button type="submit" id="send-btn">
-                    <svg viewBox="0 0 24 24" width="24" height="24">
-                        <path fill="currentColor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
-                    </svg>
-                </button>
-            </form>
-        </div>
+            <div class="input-area">
+                <form id="chat-form">
+                    <input type="text" id="user-input" placeholder="Escribe tu pregunta aquí..." autocomplete="off">
+                    <button type="submit" id="send-btn">
+                        <svg viewBox="0 0 24 24" width="24" height="24">
+                            <path fill="currentColor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </main>
     </div>
     <script src="/static/script.js?v=2"></script>
 </body>
