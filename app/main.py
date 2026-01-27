@@ -146,7 +146,7 @@ if llm:
     try:
         if embeddings:
             from langchain_community.vectorstores import Redis
-            print(f"🔌 Conectando a Redis: {final_index_name}")
+            print(f"🔌 Conectando a Redis (Dinámico): {final_index_name}")
             vectorstore = Redis(
                 redis_url=REDIS_URL,
                 index_name=final_index_name,
