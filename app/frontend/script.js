@@ -79,6 +79,11 @@ chatForm.addEventListener('submit', async (e) => {
             }),
         });
 
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Error ${response.status}: ${errorText || response.statusText}`);
+        }
+
         const data = await response.json();
 
         // Quitar loading y agregar respuesta
@@ -87,9 +92,10 @@ chatForm.addEventListener('submit', async (e) => {
 
     } catch (error) {
         loadingMsg.remove();
-        addMessage('Lo siento, hubo un error al conectar con el servidor. Asegúrate de que el backend esté corriendo.', 'ai');
-        console.error('Error:', error);
-    } finally {
+        console.error('Error detallado:', error);
+        addMessage(`❌ Error de conexión: ${error.message}. Revisa la consola del navegador para más detalles.`, 'ai');
+    }
+    finally {
         userInput.disabled = false;
         sendBtn.disabled = false;
         userInput.focus();
