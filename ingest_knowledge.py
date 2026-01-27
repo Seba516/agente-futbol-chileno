@@ -43,7 +43,9 @@ def ingest_data():
         try:
             print("🔍 Probando Google Gemini...")
             from langchain_google_genai import GoogleGenerativeAIEmbeddings
-            embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+            from langchain_google_genai import ChatGoogleGenerativeAI # Added import for ChatGoogleGenerativeAI
+            llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0) # Added LLM definition
+            embeddings = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001") # Kept original embedding model
             embeddings.embed_query("test")
             final_index_name += "_gemini"
             print("✅ Usando Google Gemini Embeddings")

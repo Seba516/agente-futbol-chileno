@@ -70,7 +70,7 @@ def load_models():
     try:
         print("🔍 Probando Gemini (Plan B)...")
         from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
-        g_llm = ChatGoogleGenerativeAI(model="gemini-3-flash-preview", temperature=0)
+        g_llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0)
         g_embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
         g_llm.invoke("ping")
         llm = g_llm
@@ -100,35 +100,52 @@ if llm:
         handle_parsing_errors=True
     )
     
-    # RAG Chain
-    from langchain_community.vectorstores import Redis
+    # Descubrir Embeddings Disponibles
     REDIS_URL = f"redis://:{os.getenv('REDIS_PASSWORD')}@{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT')}"
     BASE_INDEX_NAME = os.getenv("REDIS_INDEX", "agente_futbol")
-    
-    # Descubrir Embeddings Disponibles
     embeddings = None
     final_index_name = BASE_INDEX_NAME
     
     try:
-        # Lógica de embeddings (Mantenida igual)
         print("🔍 Probando OpenAI Embeddings...")
         from langchain_openai import OpenAIEmbeddings
         embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
-        embeddings.embed_query("test") # Validamos cuota
+        embeddings.embed_query("test") 
         final_index_name += "_openai"
     except:
         try:
             print("🔍 Probando Gemini Embeddings...")
             from langchain_google_genai import GoogleGenerativeAIEmbeddings
-            embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+            embeddings = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
             embeddings.embed_query("test")
             final_index_name += "_gemini"
         except:
             print("❌ ERROR: No se pudieron cargar embeddings de nube.")
             embeddings = None
 
+    # Prompts Base (Compartidos por SQL y RAG)
+    contextualize_q_system_prompt = """Dado el historial de chat y la última pregunta del usuario 
+    que podría referirse al contexto en el historial, formula una pregunta independiente 
+    que se pueda entender sin el historial. NO respondas la pregunta, 
+    solo reformúlala si es necesario, de lo contrario devuélvela tal cual."""
+
+    contextualize_q_prompt = ChatPromptTemplate.from_messages([
+        ("system", contextualize_q_system_prompt),
+        MessagesPlaceholder("chat_history"),
+        ("human", "{input}"),
+    ])
+
+    rag_prompt = ChatPromptTemplate.from_messages([
+        ("system", "Contesta la pregunta basándote SOLO en el siguiente contexto:\n\n{context}"),
+        MessagesPlaceholder("chat_history"),
+        ("human", "{input}"),
+    ])
+
+    # RAG Chain Initialization
+    rag_chain = None
     try:
-        if embeddings: # Solo si hay embeddings
+        if embeddings:
+            from langchain_community.vectorstores import Redis
             print(f"🔌 Conectando a Redis: {final_index_name}")
             vectorstore = Redis(
                 redis_url=REDIS_URL,
@@ -136,31 +153,9 @@ if llm:
                 embedding=embeddings
             )
             retriever = vectorstore.as_retriever()
-            
-            # Contextualize question prompt
-            contextualize_q_system_prompt = """Dado el historial de chat y la última pregunta del usuario 
-            que podría referirse al contexto en el historial, formula una pregunta independiente 
-            que se pueda entender sin el historial. NO respondas la pregunta, 
-            solo reformúlala si es necesario, de lo contrario devuélvela tal cual."""
-
-            contextualize_q_prompt = ChatPromptTemplate.from_messages([
-                ("system", contextualize_q_system_prompt),
-                MessagesPlaceholder("chat_history"),
-                ("human", "{input}"),
-            ])
-
             history_aware_retriever = create_history_aware_retriever(llm, retriever, contextualize_q_prompt)
-
-            rag_prompt = ChatPromptTemplate.from_messages([
-                ("system", "Contesta la pregunta basándote SOLO en el siguiente contexto:\n\n{context}"),
-                MessagesPlaceholder("chat_history"),
-                ("human", "{input}"),
-            ])
-
             document_chain = create_stuff_documents_chain(llm, rag_prompt)
             rag_chain = create_retrieval_chain(history_aware_retriever, document_chain)
-        else:
-            rag_chain = None
     except Exception as e:
         print(f"⚠️ Error al conectar con Redis o configurar RAG: {e}")
         rag_chain = None
