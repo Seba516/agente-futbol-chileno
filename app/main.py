@@ -6,6 +6,10 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 
+# --- NUEVOS IMPORTS PARA EL FRONTEND ---
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
 # LangChain Essential Imports
 from langchain_community.utilities import SQLDatabase
 from langchain_community.agent_toolkits import create_sql_agent
@@ -29,6 +33,16 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# --- CONFIGURACIÓN DEL FRONTEND (AGREGADO) ---
+# Obtenemos la ruta de la carpeta donde está este archivo main.py (carpeta 'app')
+current_dir = os.path.dirname(os.path.abspath(__file__))
+# Definimos la ruta de la carpeta 'frontend' que está dentro de 'app'
+frontend_path = os.path.join(current_dir, "frontend")
+
+# Montamos la carpeta para que sea accesible desde /static
+app.mount("/static", StaticFiles(directory=frontend_path), name="static")
+
 
 # --- 2. Cargar Modelos (LLM y Embeddings) con Fallback ---
 llm = None
@@ -56,9 +70,9 @@ def load_models():
     try:
         print("🔍 Probando Gemini (Plan B)...")
         from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
-        g_llm = ChatGoogleGenerativeAI(model="gemini-3-flash-preview", temperature=0)
+        g_llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0)
         g_embeddings = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
-        g_llm.invoke("ping")
+        # g_llm.invoke("ping")
         llm = g_llm
         embeddings = g_embeddings
         print("✅ Gemini activo (Plan B)")
@@ -96,17 +110,18 @@ if llm:
     final_index_name = BASE_INDEX_NAME
     
     try:
+        # Lógica de embeddings (Mantenida igual)
         print("🔍 Probando OpenAI Embeddings...")
         from langchain_openai import OpenAIEmbeddings
         embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
-        embeddings.embed_query("test")
+        # embeddings.embed_query("test") # Comentado para evitar consumo extra en deploy
         final_index_name += "_openai"
     except:
         try:
             print("🔍 Probando Gemini Embeddings...")
             from langchain_google_genai import GoogleGenerativeAIEmbeddings
             embeddings = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
-            embeddings.embed_query("test")
+            # embeddings.embed_query("test")
             final_index_name += "_gemini"
         except:
             print("🔍 Usando Embeddings Locales...")
@@ -115,38 +130,39 @@ if llm:
             final_index_name += "_local"
 
     try:
-        print(f"🔌 Conectando a Redis: {final_index_name}")
-        vectorstore = Redis(
-            redis_url=REDIS_URL,
-            index_name=final_index_name,
-            embedding=embeddings
-        )
-        retriever = vectorstore.as_retriever()
-        
-        # ... rest of the chain config ...
+        if embeddings: # Solo si hay embeddings
+            print(f"🔌 Conectando a Redis: {final_index_name}")
+            vectorstore = Redis(
+                redis_url=REDIS_URL,
+                index_name=final_index_name,
+                embedding=embeddings
+            )
+            retriever = vectorstore.as_retriever()
+            
+            # Contextualize question prompt
+            contextualize_q_system_prompt = """Dado el historial de chat y la última pregunta del usuario 
+            que podría referirse al contexto en el historial, formula una pregunta independiente 
+            que se pueda entender sin el historial. NO respondas la pregunta, 
+            solo reformúlala si es necesario, de lo contrario devuélvela tal cual."""
 
-        # Chain logic
-        contextualize_q_system_prompt = """Dado el historial de chat y la última pregunta del usuario 
-        que podría referirse al contexto en el historial, formula una pregunta independiente 
-        que se pueda entender sin el historial. NO respondas la pregunta, 
-        solo reformúlala si es necesario, de lo contrario devuélvela tal cual."""
+            contextualize_q_prompt = ChatPromptTemplate.from_messages([
+                ("system", contextualize_q_system_prompt),
+                MessagesPlaceholder("chat_history"),
+                ("human", "{input}"),
+            ])
 
-        contextualize_q_prompt = ChatPromptTemplate.from_messages([
-            ("system", contextualize_q_system_prompt),
-            MessagesPlaceholder("chat_history"),
-            ("human", "{input}"),
-        ])
+            history_aware_retriever = create_history_aware_retriever(llm, retriever, contextualize_q_prompt)
 
-        history_aware_retriever = create_history_aware_retriever(llm, retriever, contextualize_q_prompt)
+            rag_prompt = ChatPromptTemplate.from_messages([
+                ("system", "Contesta la pregunta basándote SOLO en el siguiente contexto:\n\n{context}"),
+                MessagesPlaceholder("chat_history"),
+                ("human", "{input}"),
+            ])
 
-        rag_prompt = ChatPromptTemplate.from_messages([
-            ("system", "Contesta la pregunta basándote SOLO en el siguiente contexto:\n\n{context}"),
-            MessagesPlaceholder("chat_history"),
-            ("human", "{input}"),
-        ])
-
-        document_chain = create_stuff_documents_chain(llm, rag_prompt)
-        rag_chain = create_retrieval_chain(history_aware_retriever, document_chain)
+            document_chain = create_stuff_documents_chain(llm, rag_prompt)
+            rag_chain = create_retrieval_chain(history_aware_retriever, document_chain)
+        else:
+            rag_chain = None
     except Exception as e:
         print(f"⚠️ Error al conectar con Redis o configurar RAG: {e}")
         rag_chain = None
@@ -208,6 +224,12 @@ async def chat_endpoint(request: QueryRequest):
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
+# --- MODIFICACIÓN DEL ROOT ENDPOINT ---
+# Antes devolvía JSON, ahora devuelve el HTML del Frontend
 @app.get("/")
 def read_root():
-    return {"status": "ok", "model": str(type(llm))}
+    # Verifica que exista el archivo antes de enviarlo
+    index_path = os.path.join(frontend_path, "index.html")
+    if os.path.exists(index_path):
+        return FileResponse(index_path)
+    return {"error": "Frontend no encontrado. Verifica la carpeta app/frontend"}
