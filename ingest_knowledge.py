@@ -60,8 +60,13 @@ def ingest_data():
         
     print(f"📄 Documentos cargados: {len(documents)}")
 
-    # 2. Dividir en fragmentos
-    text_splitter = CharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+    # 2. Dividir en fragmentos (Optimizado para texto)
+    from langchain_text_splitters import RecursiveCharacterTextSplitter
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=700,
+        chunk_overlap=50,
+        separators=["\n\n", "\n", ".", " "]
+    )
     chunks = text_splitter.split_documents(documents)
     print(f"🧩 Fragmentos creados: {len(chunks)}")
 

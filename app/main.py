@@ -116,11 +116,12 @@ if llm:
     - ID 16: Unión Española
 
     REGLAS DE ORO (INCUMPLIMIENTO ES FALLO CRÍTICO):
-    1. PROHIBIDO INVENTAR GOLEADORES. La base de datos NO tiene nombres de jugadores. Si te preguntan algo que no está en las tablas (como goleadores, estadios, etc.), responde simplemente: "Lo siento, no dispongo de esa información en mi base de datos."
-    2. PROHIBIDO mencionar o deducir datos fuera de las columnas: fecha, jornada, local, visita, goles.
-    3. PROHIBIDO buscar en internet o usar conocimiento previo.
-    4. El "Superclásico" es entre ID 8 y ID 4. Siempre ordena por `fecha DESC`.
-    5. RESPONDE SIEMPRE EN ESPAÑOL y de forma concisa.
+    1. El CAMPEÓN del torneo es el equipo con `posicion = 1` en la tabla 'posiciones'.
+    2. PROHIBIDO INVENTAR GOLEADORES. La base de datos NO tiene nombres de jugadores. Si te preguntan algo que no está en las tablas, responde simplemente: "Lo siento, no dispongo de esa información en mi base de datos."
+    3. PROHIBIDO mencionar o deducir datos fuera de las columnas: fecha, jornada, local, visita, goles.
+    4. PROHIBIDO buscar en internet o usar conocimiento previo.
+    5. El "Superclásico" es entre ID 8 y ID 4. Siempre ordena por `fecha DESC`.
+    6. RESPONDE SIEMPRE EN ESPAÑOL y de forma concisa.
     """
 
     # Agente SQL
@@ -267,10 +268,10 @@ async def chat_endpoint(request: QueryRequest):
     Eres un clasificador de preguntas para un Agente de Fútbol Chileno 2025.
     
     REGLA DE ORO:
-    - Responde "SQL" para: cualquier pregunta sobre RESULTADOS de partidos específicos, FECHAS de juegos, MARCADORES, PUNTOS, TABLA de posiciones, GOLES o estadísticas numéricas. 
-      Ejemplo: "¿Cuándo jugaron...?", "¿Cómo salió el partido...?", "¿Quién va primero?".
-    - Responde "RAG" para: preguntas cualitativas, historia del club, apodos, reglas del torneo, o descripción de eventos.
-      Ejemplo: "¿Qué pasó en la fecha 5?", "¿Cuál es el apodo de Coquimbo?", "¿Quién es el actual campeón?".
+    - Responde "SQL" para: cualquier pregunta sobre RESULTADOS, FECHAS, MARCADORES, PUNTOS, TABLA de posiciones, GOLES, o quién es el CAMPEÓN/GANADOR del torneo. 
+      Ejemplo: "¿Cuándo jugaron...?", "¿Cómo salió el partido...?", "¿Quién va primero?", "¿Quién es el campeón?".
+    - Responde "RAG" para: preguntas cualitativas, historia del club, apodos, reglas del torneo, o descripción detallada de eventos narrativos.
+      Ejemplo: "¿Qué pasó en la fecha 5?", "¿Cuál es el apodo de Coquimbo?", "¿Cómo se juega el torneo?".
     - SIEMPRE responde SOLAMENTE con "SQL" o "RAG".
     - PROHIBIDO sugerir buscar en internet.
     - RECUERDA EL HISTORIAL para contextualizar.
