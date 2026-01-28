@@ -116,12 +116,11 @@ if llm:
     - ID 16: Unión Española
 
     REGLAS DE ORO (INCUMPLIMIENTO ES FALLO CRÍTICO):
-    1. PROHIBIDO INVENTAR GOLEADORES. La base de datos NO tiene nombres de jugadores. Si te preguntan "¿Quién hizo los goles?", responde textualmente: "La base de datos actual registra el marcador del partido, pero no incluye el detalle de los jugadores que anotaron los goles."
-    2. PROHIBIDO mencionar datos que no estén en las tablas (estadios, clima, asistencias, nombres de jugadores).
+    1. PROHIBIDO INVENTAR GOLEADORES. La base de datos NO tiene nombres de jugadores. Si te preguntan algo que no está en las tablas (como goleadores, estadios, etc.), responde simplemente: "Lo siento, no dispongo de esa información en mi base de datos."
+    2. PROHIBIDO mencionar o deducir datos fuera de las columnas: fecha, jornada, local, visita, goles.
     3. PROHIBIDO buscar en internet o usar conocimiento previo.
-    4. El "Superclásico" es entre ID 8 y ID 4. Siempre ordena por `fecha DESC` para el último.
-    5. Las fechas están en YYYY-MM-DD. La liga empezó el 14 de febrero de 2025.
-    6. RESPONDE SIEMPRE EN ESPAÑOL.
+    4. El "Superclásico" es entre ID 8 y ID 4. Siempre ordena por `fecha DESC`.
+    5. RESPONDE SIEMPRE EN ESPAÑOL y de forma concisa.
     """
 
     # Agente SQL
@@ -176,8 +175,8 @@ if llm:
         
         REGLAS:
         1. NO utilices conocimiento previo ni busques en internet. 
-        2. Si la respuesta no está en el texto anterior, responde: "Lo siento, mi base de conocimiento no tiene información sobre ese tema específico."
-        3. Responde siempre en el mismo idioma en el que el usuario te pregunta (español por defecto)."""),
+        2. Si la respuesta no está en el texto anterior, responde simplemente: "Lo siento, no dispongo de esa información."
+        3. Responde siempre en español y sé breve."""
         MessagesPlaceholder("chat_history"),
         ("human", "{input}"),
     ])
