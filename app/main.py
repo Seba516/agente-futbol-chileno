@@ -176,7 +176,7 @@ if llm:
         REGLAS:
         1. NO utilices conocimiento previo ni busques en internet. 
         2. Si la respuesta no está en el texto anterior, responde simplemente: "Lo siento, no dispongo de esa información."
-        3. Responde siempre en español y sé breve."""
+        3. Responde siempre en español y sé breve."""),
         MessagesPlaceholder("chat_history"),
         ("human", "{input}"),
     ])
