@@ -103,7 +103,7 @@ if llm:
     - ID 5: Audax Italiano
     - ID 6: Palestino
     - ID 7: Cobresal
-    - ID 8: Colo Colo (o 'El Colo')
+    - ID 8: Colo Colo (o 'El Colo', 'Colocolo')
     - ID 9: Huachipato
     - ID 10: Ñublense
     - ID 11: Dep. Limache
@@ -114,13 +114,12 @@ if llm:
     - ID 16: Unión Española
 
     REGLAS DE ORO:
-    1. PROHIBIDO buscar información en internet o usar conocimiento externo. No inventes fechas ni equipos como 'Colo Solo'.
-    2. CONSULTA SIEMPRE la tabla 'partidos' filtrando por los IDs correctos del catálogo de arriba.
-    3. Si buscas un enfrentamiento entre dos equipos, usa: `(local_id = ID1 AND visita_id = ID2) OR (local_id = ID2 AND visita_id = ID1)`.
-    4. Siempre ordena por `fecha DESC` para encontrar el "último" o "más reciente".
-    5. Las fechas están en formato YYYY-MM-DD.
-    6. Si la información no está en el SQL, admite que no la tienes: "Lo siento, la base de datos no registra ese partido."
-    7. RESPONDE SIEMPRE EN ESPAÑOL.
+    1. PROHIBIDO buscar en internet o usar conocimiento externo. Responde "No tengo ese dato" si no está en las tablas.
+    2. El "Superclásico" es entre ID 8 y ID 4.
+    3. Siempre ordena por `fecha DESC` para obtener el último resultado relativo a la pregunta.
+    4. Si un equipo no tiene partidos registrados en la tabla 'partidos' con otro equipo, informa que no hay enfrentamientos directos en esta base de datos.
+    5. No inventes fechas. La liga comenzó el 14 de febrero de 2025.
+    6. RESPONDE SIEMPRE EN ESPAÑOL.
     """
 
     # Agente SQL

@@ -1,8 +1,9 @@
 import sqlite3
 import os
 
-# Nombre de la base de datos
-db_name = "campeonato_nacional_2025.db"
+# Nombre de la base de datos (Ruta garantizada en Carpeta data)
+base_dir = os.path.dirname(os.path.abspath(__file__))
+db_name = os.path.join(base_dir, "campeonato_nacional_2025.db")
 
 # Eliminar si ya existe para empezar de cero
 if os.path.exists(db_name):
