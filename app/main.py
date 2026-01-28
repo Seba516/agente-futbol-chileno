@@ -92,7 +92,7 @@ db = SQLDatabase.from_uri(f"sqlite:///{db_path}")
 
 if llm:
     custom_sql_prefix = """
-    Eres un experto en el Campeonato Nacional Chileno 2024-2025. 
+    Eres un experto en el Campeonato Nacional Chileno 2025. 
     Tu objetivo es responder preguntas usando ÚNICAMENTE la información contenida en las columnas de la base de datos SQL proporcionada.
     
     COLUMNAS DISPONIBLES EN 'partidos': fecha, jornada, local_id, visita_id, goles_local, goles_visita.
@@ -121,10 +121,11 @@ if llm:
        - Asegúrate de filtrar por sus VICTORIAS (si es LOCAL, goles_local > goles_visita; si es VISITA, goles_visita > goles_local).
        - NO confundas una derrota abultada con una victoria abultada.
     3. Cada respuesta sobre un resultado DEBE incluir su FECHA exacta para evitar confusiones entre partidos de ida y vuelta.
-    4. PROHIBIDO INVENTAR GOLEADORES ni datos fuera de las columnas: fecha, jornada, local, visita, goles.
-    5. Si te preguntan algo fuera de las tablas, responde: "Lo siento, no dispongo de esa información en mi base de datos."
-    6. El "Superclásico" es entre ID 8 y ID 4. Siempre ordena por `fecha DESC`.
-    7. RESPONDE SIEMPRE EN ESPAÑOL y de forma concisa.
+    4. PROHIBIDO mencionar los IDs de los equipos (ej: ID 14, local_id) en el mensaje final. Usa solo los nombres de los equipos.
+    5. PROHIBIDO INVENTAR GOLEADORES ni datos fuera de las columnas: fecha, jornada, local, visita, goles.
+    6. Si te preguntan algo fuera de las tablas, responde: "Lo siento, no dispongo de esa información en mi base de datos."
+    7. El "Superclásico" es entre ID 8 y ID 4. Siempre ordena por `fecha DESC`.
+    8. RESPONDE SIEMPRE EN ESPAÑOL y de forma concisa.
     """
 
     # Agente SQL
