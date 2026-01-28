@@ -91,11 +91,27 @@ db_path = os.path.join(base_dir, "data", "campeonato_nacional_2025.db")
 db = SQLDatabase.from_uri(f"sqlite:///{db_path}")
 
 if llm:
+    # Personalización del Agente SQL
+    custom_sql_prefix = """
+    Eres un experto en el Campeonato Nacional Chileno 2024-2025. 
+    Tu objetivo es responder preguntas usando ÚNICAMENTE la base de datos SQL proporcionada.
+    
+    REGLAS ESTRICTAS:
+    1. PROHIBIDO buscar información en internet o usar conocimiento externo.
+    2. Si la información no está en las tablas de SQL, responde: "Lo siento, no encuentro esa información detallada en mi base de datos de partidos y posiciones."
+    3. El "Superclásico" es entre Colo Colo (ID 8) y Universidad de Chile (ID 4).
+    4. Los equipos pueden aparecer con nombres como 'U. de Chile', 'Colo-Colo', 'UC', 'U. Española'.
+    5. Siempre ordena por 'fecha DESC' si te preguntan por el "último" partido.
+    6. Las fechas están en formato YYYY-MM-DD.
+    7. RESPONDE SIEMPRE EN ESPAÑOL.
+    """
+
     # Agente SQL
     sql_agent = create_sql_agent(
         llm=llm,
         db=db,
         agent_type="openai-tools" if "ChatOpenAI" in str(type(llm)) else "zero-shot-react-description",
+        prefix=custom_sql_prefix,
         verbose=True,
         handle_parsing_errors=True
     )
@@ -136,7 +152,14 @@ if llm:
     ])
 
     rag_prompt = ChatPromptTemplate.from_messages([
-        ("system", "Contesta la pregunta basándote SOLO en el siguiente contexto:\n\n{context}\n\nIMPORTANTE: Responde siempre en el mismo idioma en el que el usuario te pregunta (español por defecto)."),
+        ("system", """Contesta la pregunta basándote SOLO en el siguiente contexto:
+        
+        {context}
+        
+        REGLAS:
+        1. NO utilices conocimiento previo ni busques en internet. 
+        2. Si la respuesta no está en el texto anterior, responde: "Lo siento, mi base de conocimiento no tiene información sobre ese tema específico."
+        3. Responde siempre en el mismo idioma en el que el usuario te pregunta (español por defecto)."""),
         MessagesPlaceholder("chat_history"),
         ("human", "{input}"),
     ])
@@ -241,6 +264,7 @@ async def chat_endpoint(request: QueryRequest):
             print("📊 SQL Agent...")
             # Reformular para SQL agent
             standalone_q = (contextualize_q_prompt | llm).invoke({"input": pregunta, "chat_history": chat_history})
+            print(f"🔄 Pregunta Reformulada (SQL): {standalone_q.content}")
             response = sql_agent.invoke({"input": standalone_q.content})
             return {"source": "database_sql", "answer": response["output"]}
         elif rag_chain:
