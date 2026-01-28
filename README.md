@@ -21,7 +21,7 @@ graph TD
         Agente --> |Contexto| Redis[(🧠 Redis Vector Store - RAG)]
         
         Agente -.-> |Plan A| OpenAI[⚡ GPT-4o]
-        Agente -.-> |Plan B (Backup)| Gemini[🌟 Gemini 1.5 Flash]
+        Agente -.-> |Plan B (Backup)| Gemini[🌟 Gemini 2.5 Flash]
     end
 ```
 
