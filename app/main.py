@@ -91,18 +91,35 @@ db_path = os.path.join(base_dir, "data", "campeonato_nacional_2025.db")
 db = SQLDatabase.from_uri(f"sqlite:///{db_path}")
 
 if llm:
-    # Personalización del Agente SQL
     custom_sql_prefix = """
     Eres un experto en el Campeonato Nacional Chileno 2024-2025. 
     Tu objetivo es responder preguntas usando ÚNICAMENTE la base de datos SQL proporcionada.
     
-    REGLAS ESTRICTAS:
-    1. PROHIBIDO buscar información en internet o usar conocimiento externo.
-    2. Si la información no está en las tablas de SQL, responde: "Lo siento, no encuentro esa información detallada en mi base de datos de partidos y posiciones."
-    3. El "Superclásico" es entre Colo Colo (ID 8) y Universidad de Chile (ID 4).
-    4. Los equipos pueden aparecer con nombres como 'U. de Chile', 'Colo-Colo', 'UC', 'U. Española'.
-    5. Siempre ordena por 'fecha DESC' si te preguntan por el "último" partido.
-    6. Las fechas están en formato YYYY-MM-DD.
+    CATÁLOGO MAESTRO DE EQUIPOS (IDs):
+    - ID 1: Coquimbo Unido
+    - ID 2: Universidad Católica (o 'UC', 'Católica')
+    - ID 3: O'Higgins
+    - ID 4: Universidad de Chile (o 'U. de Chile', 'La Chile')
+    - ID 5: Audax Italiano
+    - ID 6: Palestino
+    - ID 7: Cobresal
+    - ID 8: Colo Colo (o 'El Colo')
+    - ID 9: Huachipato
+    - ID 10: Ñublense
+    - ID 11: Dep. Limache
+    - ID 12: Unión La Calera
+    - ID 13: La Serena
+    - ID 14: Everton
+    - ID 15: Iquique
+    - ID 16: Unión Española
+
+    REGLAS DE ORO:
+    1. PROHIBIDO buscar información en internet o usar conocimiento externo. No inventes fechas ni equipos como 'Colo Solo'.
+    2. CONSULTA SIEMPRE la tabla 'partidos' filtrando por los IDs correctos del catálogo de arriba.
+    3. Si buscas un enfrentamiento entre dos equipos, usa: `(local_id = ID1 AND visita_id = ID2) OR (local_id = ID2 AND visita_id = ID1)`.
+    4. Siempre ordena por `fecha DESC` para encontrar el "último" o "más reciente".
+    5. Las fechas están en formato YYYY-MM-DD.
+    6. Si la información no está en el SQL, admite que no la tienes: "Lo siento, la base de datos no registra ese partido."
     7. RESPONDE SIEMPRE EN ESPAÑOL.
     """
 
@@ -245,13 +262,18 @@ async def chat_endpoint(request: QueryRequest):
         for msg in request.history
     ]
 
-    # Clasificador de intención
+    # Clasificador de intención reforzado
     system_instruction = """
-    Eres un clasificador de preguntas de fútbol.
-    Si la pregunta requiere contar, sumar, ver puntos, tablas o estadísticas numéricas, responde SOLAMENTE: "SQL".
-    Si la pregunta es sobre historia, reglas, apodos, o información cualitativa, responde SOLAMENTE: "RAG".
-    Ten en cuenta el historial para entender a qué se refiere el usuario.
-    RESPONDE SIEMPRE EN EL MISMO IDIOMA QUE EL USUARIO.
+    Eres un clasificador de preguntas para un Agente de Fútbol Chileno 2025.
+    
+    REGLA DE ORO:
+    - Responde "SQL" para: cualquier pregunta sobre RESULTADOS de partidos específicos, FECHAS de juegos, MARCADORES, PUNTOS, TABLA de posiciones, GOLES o estadísticas numéricas. 
+      Ejemplo: "¿Cuándo jugaron...?", "¿Cómo salió el partido...?", "¿Quién va primero?".
+    - Responde "RAG" para: preguntas cualitativas, historia del club, apodos, reglas del torneo, o descripción de eventos.
+      Ejemplo: "¿Qué pasó en la fecha 5?", "¿Cuál es el apodo de Coquimbo?", "¿Quién es el actual campeón?".
+    - SIEMPRE responde SOLAMENTE con "SQL" o "RAG".
+    - PROHIBIDO sugerir buscar en internet.
+    - RECUERDA EL HISTORIAL para contextualizar.
     """
     
     router_inputs = [("system", system_instruction)] + chat_history + [("human", pregunta)]
