@@ -1,0 +1,241 @@
+Fecha,Equipo_Local,Equipo_Visitante,Goles_Local,Goles_Visita,Ganador
+1,Deportes Limache,Coquimbo Unido,1,2,Visita
+1,Deportes La Serena,Unión Española,1,0,Local
+1,Palestino,Audax Italiano,0,2,Visita
+1,Universidad Católica,Deportes Iquique,1,0,Local
+1,Everton,Ñublense,1,2,Visita
+1,Huachipato,Colo-Colo,2,1,Local
+1,Cobresal,Universidad de Chile,2,1,Local
+1,Unión La Calera,O'Higgins,2,2,Empate
+2,Audax Italiano,Deportes Iquique,4,2,Local
+2,Unión Española,Palestino,0,3,Visita
+2,Coquimbo Unido,Universidad Católica,1,0,Local
+2,Ñublense,Deportes Limache,1,1,Empate
+2,Huachipato,Everton,4,0,Local
+2,Cobresal,Deportes La Serena,3,1,Local
+2,Universidad de Chile,Unión La Calera,1,0,Local
+2,Colo-Colo,O'Higgins,0,1,Visita
+3,Deportes Limache,Coquimbo Unido,1,2,Visita
+3,Deportes La Serena,Unión Española,1,0,Local
+3,Palestino,Audax Italiano,0,2,Visita
+3,Universidad Católica,Deportes Iquique,1,0,Local
+3,Everton,Ñublense,1,2,Visita
+3,Huachipato,Colo-Colo,2,1,Local
+3,Cobresal,Universidad de Chile,2,1,Local
+3,Unión La Calera,O'Higgins,2,2,Empate
+4,Unión La Calera,Huachipato,1,0,Local
+4,Ñublense,Universidad Católica,1,1,Empate
+4,Deportes Iquique,Palestino,1,3,Visita
+4,Audax Italiano,Deportes Limache,3,1,Local
+4,Coquimbo Unido,Cobresal,1,1,Empate
+4,O'Higgins,Deportes La Serena,1,1,Empate
+4,Colo-Colo,Everton,2,0,Local
+4,Unión Española,Universidad de Chile,0,2,Visita
+5,Audax Italiano,Universidad de Chile,1,1,Empate
+5,Deportes Limache,Huachipato,2,3,Visita
+5,Everton,Coquimbo Unido,0,0,Empate
+5,Deportes La Serena,Unión La Calera,1,0,Local
+5,Cobresal,O'Higgins,0,0,Empate
+5,Palestino,Ñublense,2,0,Local
+5,Deportes Iquique,Unión Española,0,4,Visita
+5,Universidad Católica,Colo-Colo,2,0,Local
+6,Colo-Colo,Palestino,1,1,Empate
+6,Everton,Universidad de Chile,2,0,Local
+6,Unión Española,Universidad Católica,1,2,Visita
+6,Ñublense,Deportes Iquique,1,1,Empate
+6,O'Higgins,Deportes Limache,3,1,Local
+6,Huachipato,Deportes La Serena,3,1,Local
+6,Coquimbo Unido,Audax Italiano,2,1,Local
+6,Unión La Calera,Cobresal,2,1,Local
+7,Coquimbo Unido,Huachipato,0,0,Empate
+7,Cobresal,Universidad Católica,1,1,Empate
+7,Audax Italiano,O'Higgins,1,0,Local
+7,Deportes La Serena,Everton,2,1,Local
+7,Palestino,Unión La Calera,1,0,Local
+7,Unión Española,Ñublense,3,0,Local
+7,Deportes Limache,Deportes Iquique,2,0,Local
+7,Universidad de Chile,Colo-Colo,2,1,Local
+8,Universidad de Chile,Deportes La Serena,3,1,Local
+8,Audax Italiano,Unión Española,2,0,Local
+8,Huachipato,Cobresal,0,1,Visita
+8,Universidad Católica,Deportes Limache,2,1,Local
+8,Everton,Unión La Calera,1,1,Empate
+8,O'Higgins,Palestino,1,0,Local
+8,Ñublense,Coquimbo Unido,0,0,Empate
+8,Deportes Iquique,Colo-Colo,2,2,Empate
+9,Unión La Calera,Audax Italiano,1,0,Local
+9,Ñublense,Deportes La Serena,2,0,Local
+9,Universidad Católica,Everton,6,0,Local
+9,Cobresal,Deportes Limache,3,1,Local
+9,Colo-Colo,Coquimbo Unido,2,0,Local
+9,O'Higgins,Deportes Iquique,2,2,Empate
+9,Palestino,Universidad de Chile,2,3,Visita
+9,Huachipato,Unión Española,2,1,Local
+10,Deportes Limache,Colo-Colo,1,0,Local
+10,Unión Española,Cobresal,0,1,Visita
+10,Everton,Palestino,1,2,Visita
+10,Universidad de Chile,Universidad Católica,1,0,Local
+10,Coquimbo Unido,O'Higgins,2,0,Local
+10,Deportes Iquique,Huachipato,3,0,Local
+10,Audax Italiano,Deportes La Serena,2,1,Local
+10,Ñublense,Unión La Calera,1,1,Empate
+11,Unión La Calera,Coquimbo Unido,0,1,Visita
+11,Cobresal,Audax Italiano,0,1,Visita
+11,O'Higgins,Universidad Católica,2,0,Local
+11,Deportes Limache,Palestino,0,1,Visita
+11,Universidad de Chile,Huachipato,5,1,Local
+11,Unión Española,Everton,0,3,Visita
+11,Colo-Colo,Ñublense,2,2,Empate
+11,Deportes La Serena,Deportes Iquique,2,1,Local
+12,Deportes Limache,Universidad de Chile,2,0,Local
+12,Everton,Cobresal,2,2,Empate
+12,Colo-Colo,Unión Española,4,1,Local
+12,Coquimbo Unido,Palestino,0,0,Empate
+12,Ñublense,O'Higgins,0,1,Visita
+12,Universidad Católica,Deportes La Serena,1,3,Visita
+12,Deportes Iquique,Unión La Calera,0,1,Visita
+12,Audax Italiano,Huachipato,4,3,Local
+13,Deportes La Serena,Coquimbo Unido,2,4,Visita
+13,Huachipato,Ñublense,0,1,Visita
+13,Universidad de Chile,O'Higgins,6,0,Local
+13,Everton,Audax Italiano,1,1,Empate
+13,Palestino,Universidad Católica,1,1,Empate
+13,Unión La Calera,Colo-Colo,0,1,Visita
+13,Cobresal,Deportes Iquique,3,1,Local
+13,Unión Española,Deportes Limache,0,1,Visita
+14,Deportes Limache,Unión La Calera,0,1,Visita
+14,Palestino,Deportes La Serena,2,1,Local
+14,Universidad Católica,Huachipato,1,0,Local
+14,O'Higgins,Unión Española,1,0,Local
+14,Coquimbo Unido,Universidad de Chile,1,0,Local
+14,Ñublense,Audax Italiano,2,3,Visita
+14,Deportes Iquique,Everton,1,2,Visita
+14,Colo-Colo,Cobresal,4,0,Local
+15,Unión La Calera,Universidad Católica,1,1,Empate
+15,Unión Española,Coquimbo Unido,0,2,Visita
+15,Universidad de Chile,Deportes Iquique,3,1,Local
+15,Huachipato,Palestino,2,2,Empate
+15,Deportes La Serena,Deportes Limache,1,1,Empate
+15,Audax Italiano,Colo-Colo,2,1,Local
+15,Cobresal,Ñublense,1,1,Empate
+15,Everton,O'Higgins,0,1,Visita
+16,Everton,Deportes Limache,0,0,Empate
+16,Unión Española,Unión La Calera,3,1,Local
+16,Colo-Colo,Deportes La Serena,2,1,Local
+16,Coquimbo Unido,Deportes Iquique,4,1,Local
+16,Audax Italiano,Universidad Católica,1,1,Empate
+16,Ñublense,Universidad de Chile,2,2,Empate
+16,Huachipato,O'Higgins,2,1,Local
+16,Cobresal,Palestino,2,1,Local
+17,Deportes Limache,Ñublense,0,1,Visita
+17,Deportes La Serena,Cobresal,0,2,Visita
+17,Everton,Huachipato,4,1,Local
+17,O'Higgins,Colo-Colo,1,1,Empate
+17,Palestino,Unión Española,1,0,Local
+17,Universidad Católica,Coquimbo Unido,0,3,Visita
+17,Deportes Iquique,Audax Italiano,1,0,Local
+17,Unión La Calera,Universidad de Chile,0,4,Visita
+18,Audax Italiano,Palestino,1,1,Empate
+18,Unión Española,Deportes La Serena,1,0,Local
+18,Coquimbo Unido,Deportes Limache,2,1,Local
+18,Deportes Iquique,Universidad Católica,2,2,Empate
+18,O'Higgins,Unión La Calera,1,0,Local
+18,Colo-Colo,Huachipato,2,2,Empate
+18,Ñublense,Everton,1,0,Local
+18,Universidad de Chile,Cobresal,0,1,Visita
+19,Palestino,Deportes Iquique,2,0,Local
+19,Deportes La Serena,O'Higgins,3,3,Empate
+19,Huachipato,Unión La Calera,1,0,Local
+19,Cobresal,Coquimbo Unido,1,2,Visita
+19,Everton,Colo-Colo,1,1,Empate
+19,Deportes Limache,Audax Italiano,4,0,Local
+19,Universidad de Chile,Unión Española,4,1,Local
+19,Universidad Católica,Ñublense,1,0,Local
+20,Unión Española,Deportes Iquique,2,2,Empate
+20,Unión La Calera,Deportes La Serena,1,1,Empate
+20,Ñublense,Palestino,1,0,Local
+20,Colo-Colo,Universidad Católica,1,4,Visita
+20,O'Higgins,Cobresal,1,0,Local
+20,Universidad de Chile,Audax Italiano,1,3,Visita
+20,Huachipato,Deportes Limache,4,0,Local
+20,Coquimbo Unido,Everton,2,1,Local
+21,Palestino,Colo-Colo,0,0,Empate
+21,Deportes Limache,O'Higgins,2,2,Empate
+21,Deportes La Serena,Huachipato,0,2,Visita
+21,Deportes Iquique,Ñublense,0,2,Visita
+21,Universidad de Chile,Everton,1,1,Empate
+21,Universidad Católica,Unión Española,1,1,Empate
+21,Audax Italiano,Coquimbo Unido,1,1,Empate
+21,Cobresal,Unión La Calera,1,0,Local
+22,Palestino,Unión La Calera,2,1,Local
+22,Everton,Deportes La Serena,2,1,Local
+22,Huachipato,Coquimbo Unido,1,1,Empate
+22,Universidad Católica,Cobresal,2,0,Local
+22,O'Higgins,Audax Italiano,1,1,Empate
+22,Ñublense,Unión Española,1,2,Visita
+22,Deportes Iquique,Deportes Limache,1,1,Empate
+22,Colo-Colo,Universidad de Chile,0,0,Empate
+23,Unión La Calera,Everton,1,0,Local
+23,Unión Española,Audax Italiano,3,4,Visita
+23,Palestino,O'Higgins,1,2,Visita
+23,Cobresal,Huachipato,3,2,Local
+23,Deportes Limache,Universidad Católica,0,1,Visita
+23,Colo-Colo,Deportes Iquique,4,0,Local
+23,Deportes La Serena,Universidad de Chile,1,1,Empate
+23,Coquimbo Unido,Ñublense,2,1,Local
+24,Unión Española,Huachipato,4,2,Local
+24,Universidad de Chile,Palestino,2,1,Local
+24,Audax Italiano,Unión La Calera,0,1,Visita
+24,Deportes Iquique,O'Higgins,1,1,Empate
+24,Deportes La Serena,Ñublense,0,0,Empate
+24,Deportes Limache,Cobresal,1,2,Visita
+24,Coquimbo Unido,Colo-Colo,1,1,Empate
+24,Everton,Universidad Católica,0,3,Visita
+25,Palestino,Everton,2,1,Local
+25,Deportes La Serena,Audax Italiano,2,1,Local
+25,Huachipato,Deportes Iquique,1,1,Empate
+25,O'Higgins,Coquimbo Unido,0,1,Visita
+25,Universidad Católica,Universidad de Chile,1,0,Local
+25,Cobresal,Unión Española,1,0,Local
+25,Unión La Calera,Ñublense,3,0,Local
+25,Colo-Colo,Deportes Limache,2,2,Empate
+26,Deportes Iquique,Deportes La Serena,1,2,Visita
+26,Coquimbo Unido,Unión La Calera,2,0,Local
+26,Universidad Católica,O'Higgins,0,2,Visita
+26,Audax Italiano,Cobresal,1,3,Visita
+26,Palestino,Deportes Limache,1,1,Empate
+26,Huachipato,Universidad de Chile,1,0,Local
+26,Everton,Unión Española,0,0,Empate
+26,Ñublense,Colo-Colo,1,1,Empate
+27,Unión La Calera,Deportes Iquique,1,2,Visita
+27,Deportes La Serena,Universidad Católica,0,1,Visita
+27,Unión Española,Colo-Colo,1,2,Visita
+27,Palestino,Coquimbo Unido,1,2,Visita
+27,O'Higgins,Ñublense,4,2,Local
+27,Huachipato,Audax Italiano,2,1,Local
+27,Universidad de Chile,Deportes Limache,4,3,Local
+27,Cobresal,Everton,1,2,Visita
+28,Deportes Iquique,Cobresal,2,1,Local
+28,Audax Italiano,Everton,2,0,Local
+28,Deportes Limache,Unión Española,1,0,Local
+28,Coquimbo Unido,Deportes La Serena,2,1,Local
+28,Universidad Católica,Palestino,2,1,Local
+28,O'Higgins,Universidad de Chile,0,1,Visita
+28,Colo-Colo,Unión La Calera,4,1,Local
+28,Ñublense,Huachipato,0,1,Visita
+29,Cobresal,Colo-Colo,3,0,Local
+29,Deportes La Serena,Palestino,0,3,Visita
+29,Unión Española,O'Higgins,2,4,Visita
+29,Everton,Deportes Iquique,0,1,Visita
+29,Unión La Calera,Deportes Limache,0,1,Visita
+29,Audax Italiano,Ñublense,1,0,Local
+29,Universidad de Chile,Coquimbo Unido,1,1,Empate
+29,Huachipato,Universidad Católica,0,0,Empate
+30,Coquimbo Unido,Unión Española,1,0,Local
+30,Deportes Limache,Deportes La Serena,1,0,Local
+30,O'Higgins,Everton,1,0,Local
+30,Colo-Colo,Audax Italiano,1,2,Visita
+30,Ñublense,Cobresal,5,0,Local
+30,Palestino,Huachipato,2,2,Empate
+30,Universidad Católica,Unión La Calera,1,1,Empate
+30,Deportes Iquique,Universidad de Chile,0,1,Visita

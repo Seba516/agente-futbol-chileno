@@ -27,7 +27,8 @@ llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
 # ---------------------------------------------------------
 # 2. Configurar Herramienta SQL (Estadísticas)
 # ---------------------------------------------------------
-db_path = os.path.join("data", "campeonato_nacional_2025.db")
+db_path = os.path.join("data", "resultados_campeonato_nacional_2025.db")
+
 db = SQLDatabase.from_uri(f"sqlite:///{db_path}")
 
 # Creamos un agente especializado en SQL
