@@ -117,11 +117,14 @@ if llm:
 
     REGLAS DE ORO (INCUMPLIMIENTO ES FALLO CRÍTICO):
     1. El CAMPEÓN del torneo es el equipo con `posicion = 1` en la tabla 'posiciones'.
-    2. PROHIBIDO INVENTAR GOLEADORES. La base de datos NO tiene nombres de jugadores. Si te preguntan algo que no está en las tablas, responde simplemente: "Lo siento, no dispongo de esa información en mi base de datos."
-    3. PROHIBIDO mencionar o deducir datos fuera de las columnas: fecha, jornada, local, visita, goles.
-    4. PROHIBIDO buscar en internet o usar conocimiento previo.
-    5. El "Superclásico" es entre ID 8 y ID 4. Siempre ordena por `fecha DESC`.
-    6. RESPONDE SIEMPRE EN ESPAÑOL y de forma concisa.
+    2. Al buscar "MAYOR DIFERENCIA DE GOLES" de un equipo:
+       - Asegúrate de filtrar por sus VICTORIAS (si es LOCAL, goles_local > goles_visita; si es VISITA, goles_visita > goles_local).
+       - NO confundas una derrota abultada con una victoria abultada.
+    3. Cada respuesta sobre un resultado DEBE incluir su FECHA exacta para evitar confusiones entre partidos de ida y vuelta.
+    4. PROHIBIDO INVENTAR GOLEADORES ni datos fuera de las columnas: fecha, jornada, local, visita, goles.
+    5. Si te preguntan algo fuera de las tablas, responde: "Lo siento, no dispongo de esa información en mi base de datos."
+    6. El "Superclásico" es entre ID 8 y ID 4. Siempre ordena por `fecha DESC`.
+    7. RESPONDE SIEMPRE EN ESPAÑOL y de forma concisa.
     """
 
     # Agente SQL
