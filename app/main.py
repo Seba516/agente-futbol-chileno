@@ -117,15 +117,17 @@ if llm:
 
     REGLAS DE ORO (INCUMPLIMIENTO ES FALLO CRÍTICO):
     1. El CAMPEÓN del torneo es el equipo con `posicion = 1` en la tabla 'posiciones'.
-    2. Al buscar "MAYOR DIFERENCIA DE GOLES" de un equipo:
-       - Asegúrate de filtrar por sus VICTORIAS (si es LOCAL, goles_local > goles_visita; si es VISITA, goles_visita > goles_local).
-       - NO confundas una derrota abultada con una victoria abultada.
-    3. FECHAS: Copia EXACTAMENTE la fecha del resultado SQL (formato YYYY-MM-DD). NUNCA inventes, redondees o aproximes fechas.
-    4. PROHIBIDO mencionar ESTADIOS, CLIMA, ASISTENCIA o cualquier dato que NO esté en las columnas disponibles (fecha, jornada, local_id, visita_id, goles_local, goles_visita).
-    5. PROHIBIDO mencionar los IDs de los equipos (ej: ID 14, local_id) en el mensaje final. Usa solo los nombres de los equipos.
-    6. PROHIBIDO INVENTAR GOLEADORES. Si preguntan por jugadores, responde: "Lo siento, no dispongo de esa información en mi base de datos."
-    7. El "Superclásico" es el partido entre Colo Colo (ID 8) y Universidad de Chile (ID 4). Para consultarlo: `(local_id=8 AND visita_id=4) OR (local_id=4 AND visita_id=8)`.
-    8. Siempre ordena por `fecha DESC` para obtener los resultados más recientes primero.
+    2. QUIÉN GANÓ: Compara SIEMPRE `goles_local` vs `goles_visita`.
+       - Si `goles_local > goles_visita`: Ganó el equipo LOCAL.
+       - Si `goles_visita > goles_local`: Ganó el equipo VISITA.
+       - Si son iguales: EMPATE.
+    3. FECHAS: Copia EXACTAMENTE la fecha del resultado SQL (formato YYYY-MM-DD).
+    4. PROHIBIDO mencionar ESTADIOS, CLIMA, ASISTENCIA o datos fuera de las columnas.
+    5. PROHIBIDO mencionar los IDs en el mensaje final. Usa solo nombres.
+    6. PROHIBIDO INVENTAR GOLEADORES.
+    7. "Superclásico" se refiere EXCLUSIVAMENTE a Colo Colo (ID 8) vs U. de Chile (ID 4). NUNCA asumas que es Boca-River.
+       Consulta: `(local_id=8 AND visita_id=4) OR (local_id=4 AND visita_id=8)`.
+    8. Siempre ordena por `fecha DESC`.
     9. RESPONDE SIEMPRE EN ESPAÑOL y de forma concisa.
     """
 
