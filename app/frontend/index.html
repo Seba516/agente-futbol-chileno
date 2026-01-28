@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agente Futbolero AI ⚽️</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css?v=2">
+</head>
+
+<body>
+    <div class="dashboard">
+        <!-- Panel Izquierdo: Estadísticas -->
+        <aside class="sidebar">
+            <header class="sidebar-header">
+                <div class="logo">⚽️</div>
+                <h1>Agente <span>Dashboard</span></h1>
+            </header>
+
+            <section class="stats-card">
+                <h3>📊 Top 5 Posiciones</h3>
+                <div id="table-loader" class="loader-small"></div>
+                <div id="positions-table"></div>
+            </section>
+
+            <section class="stats-card">
+                <h3>📅 Últimos Resultados</h3>
+                <div id="results-loader" class="loader-small"></div>
+                <div id="recent-results" class="results-list"></div>
+            </section>
+        </aside>
+
+        <!-- Panel Derecho: Chat -->
+        <main class="main-content">
+            <header class="chat-header">
+                <h2>Chat AI de Fútbol</h2>
+                <p>Campeonato Nacional Chileno 2025</p>
+            </header>
+
+            <div id="chat-container" class="chat-container">
+                <div class="message system">
+                    ¡Hola! Soy tu experto en fútbol chileno. Pregúntame sobre la tabla de posiciones, resultados o
+                    historia de los equipos.
+                </div>
+            </div>
+
+            <div class="input-area">
+                <form id="chat-form">
+                    <input type="text" id="user-input" placeholder="Escribe tu pregunta aquí..." autocomplete="off">
+                    <button type="submit" id="send-btn">
+                        <svg viewBox="0 0 24 24" width="24" height="24">
+                            <path fill="currentColor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </main>
+    </div>
+    <script src="/static/script.js?v=2"></script>
+</body>
+
+</html>
