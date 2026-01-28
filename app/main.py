@@ -54,9 +54,9 @@ def load_models():
     
     # Intentar OpenAI
     try:
-        print("🔍 Probando OpenAI (GPT-3.5 + Embeddings)...")
+        print("🔍 Probando OpenAI (GPT-4o + Embeddings)...")
         from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-        o_llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0, max_retries=1)
+        o_llm = ChatOpenAI(model="gpt-4o", temperature=0, max_retries=1)
         o_embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
         o_llm.invoke("ping")
         llm = o_llm
