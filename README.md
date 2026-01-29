@@ -1,5 +1,7 @@
 # ⚽️ Agente de IA: Fútbol Chileno 2025 (SQL + RAG)
 
+Se puede testear en https://agentefutbol.pralad.com/
+
 Este proyecto implementa un Agente de Inteligencia Artificial capaz de responder preguntas sobre el Campeonato Nacional 2025. Utiliza una arquitectura híbrida:
 
 1.  **Agente SQL:** Consulta la base de datos `resultados_campeonato_nacional_2025.db` para obtener estadísticas exactas, resultados de partidos y tablas de posiciones.
@@ -92,7 +94,7 @@ flowchart TB
 *   **Router de Intención (GPT-4o):** Clasifica cada pregunta:
     *   **SQL:** Para resultados, fechas exactas, goleadores, tablas ("¿Cómo salió la U?", "¿Quién es el campeón?").
     *   **RAG:** Para historia, reglas, apodos y contexto ("¿Qué es el Superclásico?", "¿Quiénes descendieron?").
-*   **Respaldo Automático:** Usa **GPT-4o** como cerebro principal. Si se agota la cuota, conmuta automáticamente a **Gemini 1.5 Flash**.
+*   **Respaldo Automático:** Usa **GPT-4o** como cerebro principal. Si se agota la cuota, conmuta automáticamente a **Gemini 2.5 Flash**.
 
 ### 🛡️ Blindaje Anti-Alucinaciones
 *   **Precisión SQL:** Reglas estrictas prohíben inventar goleadores, estadios o datos no columnares.
