@@ -16,17 +16,21 @@ Combina un **Agente SQL** (para datos duros) con un sistema **RAG** (para contex
 El sistema está desplegado en una infraestructura de alto rendimiento diseñada para seguridad y velocidad:
 
 ```mermaid
-graph TD
-subgraph GCE_Server["Servidor Google Cloud"]
+---
+config:
+  layout: fixed
+---
+flowchart TB
+ subgraph GCE_Server["Servidor Google Cloud"]
         Uvi["Uvicorn + FastAPI"]
         Nginx["Nginx"]
         Agente["Agente AI"]
-        SQL[("SQLite Resultados")]
+        SQL[("SQLite")]
   end
     User(("Usuario")) <--> CF["Cloudflare Proxy"]
     Nginx <--> Uvi
     Uvi --> Agente
-    Agente <--> SQL & n2["Gemini 2.5 Flash"] & n3[("Redis Vector Store")] & n1["GPT-4o"]
+    Agente <--> SQL & n3[("Redis Vector Store")] & n2["Gemini 2.5 Flash"] & n1["GPT-4o"]
     CF <--> Nginx
 
     n2@{ shape: rect}
