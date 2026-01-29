@@ -2,7 +2,7 @@ import pandas as pd
 import sqlite3
 import os
 
-<<<<<<< HEAD
+
 # --- CONFIGURACIÓN ---
 # Si NO le cambiaste el nombre al archivo, pon el nombre largo exacto entre las comillas
 nombre_csv = 'resultados_campeonato_nacional_2025.csv' 
@@ -33,7 +33,7 @@ else:
         
     except Exception as e:
         print(f"❌ Ocurrió un error: {e}")
-=======
+
 # Nombre de la base de datos (Ruta garantizada en Carpeta data)
 base_dir = os.path.dirname(os.path.abspath(__file__))
 db_name = os.path.join(base_dir, "campeonato_nacional_2025.db")
@@ -306,4 +306,3 @@ conn.commit()
 conn.close()
 
 print(f"Base de datos '{db_name}' creada exitosamente con {len(partidos_list)} partidos.")
->>>>>>> pralad

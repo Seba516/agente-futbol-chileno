@@ -34,13 +34,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-<<<<<<< HEAD
+
 # ---------------------------------------------------------
 # 2. Configurar Herramienta SQL (Estadísticas)
 # ---------------------------------------------------------
 db_path = os.path.join("data", "resultados_campeonato_nacional_2025.db")
 
-=======
+
 # --- CONFIGURACIÓN DEL FRONTEND (AGREGADO) ---
 # Obtenemos la ruta de la carpeta donde está este archivo main.py (carpeta 'app')
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -95,7 +95,7 @@ load_models()
 # --- 3. Recursos de Datos ---
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 db_path = os.path.join(base_dir, "data", "campeonato_nacional_2025.db")
->>>>>>> pralad
+
 db = SQLDatabase.from_uri(f"sqlite:///{db_path}")
 
 if llm:

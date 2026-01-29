@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # ⚽️ Agente de IA: Fútbol Chileno 2025 (SQL + RAG)
 
 Este proyecto implementa un Agente de Inteligencia Artificial capaz de responder preguntas sobre el Campeonato Nacional 2025. Utiliza una arquitectura híbrida:
@@ -18,18 +17,18 @@ El sistema está desplegado en una infraestructura de alto rendimiento diseñada
 
 ```mermaid
 graph TD
-    User((Usuario)) --> |HTTPS/443| CF[🛡️ Cloudflare Proxy]
-    CF --> |SSL Encriptado| GCE[☁️ Google Compute Engine]
+    User((Usuario)) --> |HTTPS/443| CF[Cloudflare Proxy]
+    CF --> |SSL Encriptado| GCE[Google Compute Engine]
     
-    subgraph "Servidor Ubuntu (GCE)"
-        Nginx[🦅 Nginx (Reverse Proxy)] --> |Proxy Pass| Uvi[🦄 Uvicorn + FastAPI]
-        Uvi --> |Lógica| Agente[🤖 Agente AI (LangChain)]
+    subgraph GCE_Server [Servidor Ubuntu]
+        Nginx[Nginx Reverse Proxy] --> |Proxy Pass| Uvi[Uvicorn + FastAPI]
+        Uvi --> |Lógica| Agente[Agente AI LangChain]
         
-        Agente --> |Consultas| SQL[(🗄️ SQLite - Resultados)]
-        Agente --> |Contexto| Redis[(🧠 Redis Vector Store - RAG)]
+        Agente --> |Consultas| SQL[(SQLite Resultados)]
+        Agente --> |Contexto| Redis[(Redis Vector Store)]
         
-        Agente -.-> |Plan A| OpenAI[⚡ GPT-4o]
-        Agente -.-> |Plan B (Backup)| Gemini[🌟 Gemini 2.5 Flash]
+        Agente -.-> |Plan A| OpenAI[GPT-4o]
+        Agente -.-> |Plan B Backup| Gemini[Gemini 2.5 Flash]
     end
 ```
 
@@ -40,11 +39,9 @@ graph TD
 *   **Redis Stack:** Motor vectorial para búsquedas semánticas ultrarrápidas (RAG).
 
 ---
->>>>>>> pralad
 
 ## 🚀 Funcionalidades
 
-<<<<<<< HEAD
 * **Router Inteligente:** Decide automáticamente si usar SQL o RAG según la pregunta.
 * **Consulta de Datos:** Responde preguntas complejas como *"¿Quién ganó el partido entre X e Y en la fecha 1?"* o *"¿Cuántos goles de visita tiene la U?"*.
 * **Contexto:** Explica reglas y situaciones de equipos basándose en documentos actualizados.
@@ -85,8 +82,7 @@ graph TD
 * **Ejemplo RAG:** *"Háblame de los refuerzos de Colo-Colo para el 2025"*
 
 ---
-**Autor:** Sebastián Soto - Proyecto Sistemas de IA
-=======
+
 ### 🧠 Inteligencia Híbrida
 *   **Router de Intención (GPT-4o):** Clasifica cada pregunta:
     *   **SQL:** Para resultados, fechas exactas, goleadores, tablas ("¿Cómo salió la U?", "¿Quién es el campeón?").
@@ -166,4 +162,3 @@ nohup python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --proxy-headers
 
 ## 🏆 Créditos
 Desarrollado para la **UAI** como demostración de un Agente AI Avanzado con capacidades de razonamiento SQL+RAG y arquitectura resiliente.
->>>>>>> pralad
