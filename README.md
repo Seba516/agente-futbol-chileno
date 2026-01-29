@@ -162,3 +162,4 @@ nohup python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --proxy-headers
 
 ## 🏆 Créditos
 Desarrollado para la **UAI** como demostración de un Agente AI Avanzado con capacidades de razonamiento SQL+RAG y arquitectura resiliente.
+Nombres: Sebastián Soto, Pralad Varela, Mauricio Gallardo y Raúl Cantero. (Grupo 14)
