@@ -79,7 +79,7 @@ graph TD
 ## 🧪 Pruebas
 * **Swagger UI:** `http://127.0.0.1:8000/docs`
 * **Ejemplo SQL:** *"¿Cuáles fueron los resultados de la fecha 1?"*
-* **Ejemplo RAG:** *"Háblame de los refuerzos de Colo-Colo para el 2025"*
+* **Ejemplo RAG:** *"¿Cuál es el estadio de Colo-Colo?"*
 
 ---
 
