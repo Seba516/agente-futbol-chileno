@@ -17,19 +17,20 @@ El sistema está desplegado en una infraestructura de alto rendimiento diseñada
 
 ```mermaid
 graph TD
-    User((Usuario)) --> |HTTPS/443| CF[Cloudflare Proxy]
-    CF --> |SSL Encriptado| GCE[Google Compute Engine]
-    
-    subgraph GCE_Server [Servidor Ubuntu]
-        Nginx[Nginx Reverse Proxy] --> |Proxy Pass| Uvi[Uvicorn + FastAPI]
-        Uvi --> |Lógica| Agente[Agente AI LangChain]
-        
-        Agente --> |Consultas| SQL[(SQLite Resultados)]
-        Agente --> |Contexto| Redis[(Redis Vector Store)]
-        
-        Agente -.-> |Plan A| OpenAI[GPT-4o]
-        Agente -.-> |Plan B Backup| Gemini[Gemini 2.5 Flash]
-    end
+subgraph GCE_Server["Servidor Google Cloud"]
+        Uvi["Uvicorn + FastAPI"]
+        Nginx["Nginx"]
+        Agente["Agente AI"]
+        SQL[("SQLite Resultados")]
+  end
+    User(("Usuario")) <--> CF["Cloudflare Proxy"]
+    Nginx <--> Uvi
+    Uvi --> Agente
+    Agente <--> SQL & n2["Gemini 2.5 Flash"] & n3[("Redis Vector Store")] & n1["GPT-4o"]
+    CF <--> Nginx
+
+    n2@{ shape: rect}
+    n1@{ shape: rect}
 ```
 
 ### Componentes Clave:
